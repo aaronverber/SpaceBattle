@@ -12,6 +12,10 @@ namespace SpaceBattleGame
     {
         int _x;
         int _y;
+        int _xMoveLeft;
+        int _xMoveRight;
+        int _yMoveUp;
+        int _yMoveDown;
 
         public SpaceBoard()
         {
@@ -26,23 +30,23 @@ namespace SpaceBattleGame
             var bitmap = new Bitmap(Width, Height);
             var bitmapGraphics = Graphics.FromImage(bitmap);
             var g = bitmapGraphics;
-            g.FillRectangle(Brushes.White, new Rectangle(0,0,Width, Height));
-            g.DrawLine(Pens.Black, new Point(10,10), new Point(10, this.Height - 10));
+            g.FillRectangle(Brushes.White, new Rectangle(0, 0, Width, Height));
+            g.DrawLine(Pens.Black, new Point(10, 10), new Point(10, this.Height - 10));
             g.DrawLine(Pens.Black, new Point(10, 10), new Point(this.Width - 10, 10));
 
-            var margin = this.Height / 10;
-            for (var i = 0; i < 10; i++)
+            var margin = (this.Height - 20) / 10;
+            for (var i = 0; i <= 10; i++)
             {
                 g.DrawLine(Pens.Black, new Point(10, margin * i + 10), new Point(this.Width - 10, margin * i + 10));
             }
 
-            margin = this.Width / 10;
-            for (var i = 0; i < 10; i++)
+            margin = (this.Width - 20) / 10;
+            for (var i = 0; i <= 10; i++)
             {
                 g.DrawLine(Pens.Black, new Point(margin * i + 10, 10), new Point(margin * i + 10, this.Height - 10));
             }
 
-            g.DrawImage(Resource1.enterprise, _x + 15, _y + 12 ,20,20);
+            g.DrawImage(Resource1.enterprise, _x + 15, _y + 12, 20, 20);
 
             e.Graphics.DrawImage(bitmap, new Point(0, 0));
 
@@ -62,21 +66,41 @@ namespace SpaceBattleGame
 
         void HandleKeyDown(object sender, PreviewKeyDownEventArgs args)
         {
+
+            if (_x >= 220)
+                _xMoveRight = 0;
+            else
+                _xMoveRight = 26;
+
+            if (_y >= 200)
+                _yMoveDown = 0;
+            else
+                _yMoveDown = 24;
+
+            if (_y == 0)
+                _yMoveUp = 0;
+            else
+                _yMoveUp = 24;
+
+            if (_x == 0)
+                _xMoveLeft = 0;
+            else
+                _xMoveLeft = 26;
+
             switch (args.KeyCode)
             {
                 case Keys.Left:
-                    _x -= 28;
+                    _x -= _xMoveLeft;
                     break;
                 case Keys.Up:
-                    _y -= 26;
+                    _y -= _yMoveUp;
                     break;
                 case Keys.Right:
-                    _x += 28;
+                    _x += _xMoveRight;
                     break;
                 case Keys.Down:
-                    _y += 26;
+                    _y += _yMoveDown;
                     break;
-
             }
             Invalidate();
         }
