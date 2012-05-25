@@ -7,22 +7,18 @@ using System.Drawing;
 
 namespace SpaceBattleGame
 {
+
+    class Ship
+    {
+        public int X;
+        public int Y;
+    }
+
     [System.ComponentModel.DesignerCategory("")]
     class SpaceBoard : Control
     {
-        int _enterpriseX;
-        int _enterpriseY;
-        int _enterpriseMoveLeft;
-        int _enterpriseMoveRight;
-        int _enterpriseMoveUp;
-        int _enterpriseMoveDown;
-
-        int _birdOfPreyX;
-        int _birdOfPreyY;
-        int _birdOfPreyMoveLeft;
-        int _birdOfPreyMoveRight;
-        int _birdOfPreyMoveUp;
-        int _birdOfPreyMoveDown;
+        Ship _enterprise;
+        Ship _birdOfPrey;
 
         const int XMoveDistance = 26;
         const int YMoveDistance = 24;
@@ -35,6 +31,9 @@ namespace SpaceBattleGame
             BackColor = Color.White;
 
             Resize += HandleResize;
+
+            _enterprise = new Ship();
+            _birdOfPrey = new Ship();
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -58,8 +57,8 @@ namespace SpaceBattleGame
                 g.DrawLine(Pens.Black, new Point(margin * i + 10, 10), new Point(margin * i + 10, this.Height - 10));
             }
 
-            g.DrawImage(Resource1.enterprise, _enterpriseX + 15, _enterpriseY + 12, 20, 20);
-            g.DrawImage(Resource1.birdofprey, _birdOfPreyX + 15 , _birdOfPreyY + 12, 20, 20); 
+            g.DrawImage(Resource1.enterprise, _enterprise.X + 15, _enterprise.Y + 12, 20, 20);
+            g.DrawImage(Resource1.birdofprey, _birdOfPrey.X + 15, _birdOfPrey.Y + 12, 20, 20);
 
             e.Graphics.DrawImage(bitmap, new Point(0, 0));
 
@@ -79,84 +78,52 @@ namespace SpaceBattleGame
 
         void HandleKeyDown(object sender, PreviewKeyDownEventArgs args)
         {
+            int moveRight, moveLeft, moveDown, moveUp;
+            Ship ship = null;
             if (_enterpriseTurn)
             {
-                _enterpriseTurn = false;
-                if (_enterpriseX >= 220)
-                    _enterpriseMoveRight = 0;
-                else
-                    _enterpriseMoveRight = XMoveDistance;
-
-                if (_enterpriseY >= 200)
-                    _enterpriseMoveDown = 0;
-                else
-                    _enterpriseMoveDown = YMoveDistance;
-
-                if (_enterpriseY == 0)
-                    _enterpriseMoveUp = 0;
-                else
-                    _enterpriseMoveUp = YMoveDistance;
-
-                if (_enterpriseX == 0)
-                    _enterpriseMoveLeft = 0;
-                else
-                    _enterpriseMoveLeft = XMoveDistance;
-
-                switch (args.KeyCode)
-                {
-                    case Keys.Left:
-                        _enterpriseX -= _enterpriseMoveLeft;
-                        break;
-                    case Keys.Up:
-                        _enterpriseY -= _enterpriseMoveUp;
-                        break;
-                    case Keys.Right:
-                        _enterpriseX += _enterpriseMoveRight;
-                        break;
-                    case Keys.Down:
-                        _enterpriseY += _enterpriseMoveDown;
-                        break;
-                }
+                ship = _enterprise;
             }
             else
             {
-                _enterpriseTurn = true;
-                if (_birdOfPreyX >= 220)
-                    _birdOfPreyMoveRight = 0;
-                else
-                    _birdOfPreyMoveRight = XMoveDistance;
-
-                if (_birdOfPreyY >= 200)
-                    _birdOfPreyMoveDown = 0;
-                else
-                    _birdOfPreyMoveDown = YMoveDistance;
-
-                if (_birdOfPreyY == 0)
-                    _birdOfPreyMoveUp = 0;
-                else
-                    _birdOfPreyMoveUp = YMoveDistance;
-
-                if (_birdOfPreyX == 0)
-                    _birdOfPreyMoveLeft = 0;
-                else
-                    _birdOfPreyMoveLeft = XMoveDistance;
-
-                switch (args.KeyCode)
-                {
-                    case Keys.Left:
-                        _birdOfPreyX -= _birdOfPreyMoveLeft;
-                        break;
-                    case Keys.Up:
-                        _birdOfPreyY -= _birdOfPreyMoveUp;
-                        break;
-                    case Keys.Right:
-                        _birdOfPreyX += _birdOfPreyMoveRight;
-                        break;
-                    case Keys.Down:
-                        _birdOfPreyY += _birdOfPreyMoveDown;
-                        break;
-                }
+                ship = _birdOfPrey;
             }
+            if (ship.X >= 220)
+                moveRight = 0;
+            else
+                moveRight = XMoveDistance;
+
+            if (ship.Y >= 200)
+                moveDown = 0;
+            else
+                moveDown = YMoveDistance;
+
+            if (ship.Y == 0)
+                moveUp = 0;
+            else
+                moveUp = YMoveDistance;
+
+            if (ship.X == 0)
+                moveLeft = 0;
+            else
+                moveLeft = XMoveDistance;
+
+            switch (args.KeyCode)
+            {
+                case Keys.Left:
+                    ship.X -= moveLeft;
+                    break;
+                case Keys.Up:
+                    ship.Y -= moveUp;
+                    break;
+                case Keys.Right:
+                    ship.X += moveRight;
+                    break;
+                case Keys.Down:
+                    ship.Y += moveDown;
+                    break;
+            }
+            _enterpriseTurn = !_enterpriseTurn;
             Invalidate();
         }
     }
