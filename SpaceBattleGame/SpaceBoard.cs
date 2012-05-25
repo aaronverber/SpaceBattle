@@ -10,12 +10,24 @@ namespace SpaceBattleGame
     [System.ComponentModel.DesignerCategory("")]
     class SpaceBoard : Control
     {
-        int _x;
-        int _y;
-        int _xMoveLeft;
-        int _xMoveRight;
-        int _yMoveUp;
-        int _yMoveDown;
+        int _enterpriseX;
+        int _enterpriseY;
+        int _enterpriseMoveLeft;
+        int _enterpriseMoveRight;
+        int _enterpriseMoveUp;
+        int _enterpriseMoveDown;
+
+        int _birdOfPreyX;
+        int _birdOfPreyY;
+        int _birdOfPreyMoveLeft;
+        int _birdOfPreyMoveRight;
+        int _birdOfPreyMoveUp;
+        int _birdOfPreyMoveDown;
+
+        const int XMoveDistance = 26;
+        const int YMoveDistance = 24;
+
+        bool _enterpriseTurn = true;
 
         public SpaceBoard()
         {
@@ -46,7 +58,8 @@ namespace SpaceBattleGame
                 g.DrawLine(Pens.Black, new Point(margin * i + 10, 10), new Point(margin * i + 10, this.Height - 10));
             }
 
-            g.DrawImage(Resource1.enterprise, _x + 15, _y + 12, 20, 20);
+            g.DrawImage(Resource1.enterprise, _enterpriseX + 15, _enterpriseY + 12, 20, 20);
+            g.DrawImage(Resource1.birdofprey, _birdOfPreyX + 15 , _birdOfPreyY + 12, 20, 20); 
 
             e.Graphics.DrawImage(bitmap, new Point(0, 0));
 
@@ -66,41 +79,83 @@ namespace SpaceBattleGame
 
         void HandleKeyDown(object sender, PreviewKeyDownEventArgs args)
         {
-
-            if (_x >= 220)
-                _xMoveRight = 0;
-            else
-                _xMoveRight = 26;
-
-            if (_y >= 200)
-                _yMoveDown = 0;
-            else
-                _yMoveDown = 24;
-
-            if (_y == 0)
-                _yMoveUp = 0;
-            else
-                _yMoveUp = 24;
-
-            if (_x == 0)
-                _xMoveLeft = 0;
-            else
-                _xMoveLeft = 26;
-
-            switch (args.KeyCode)
+            if (_enterpriseTurn)
             {
-                case Keys.Left:
-                    _x -= _xMoveLeft;
-                    break;
-                case Keys.Up:
-                    _y -= _yMoveUp;
-                    break;
-                case Keys.Right:
-                    _x += _xMoveRight;
-                    break;
-                case Keys.Down:
-                    _y += _yMoveDown;
-                    break;
+                _enterpriseTurn = false;
+                if (_enterpriseX >= 220)
+                    _enterpriseMoveRight = 0;
+                else
+                    _enterpriseMoveRight = XMoveDistance;
+
+                if (_enterpriseY >= 200)
+                    _enterpriseMoveDown = 0;
+                else
+                    _enterpriseMoveDown = YMoveDistance;
+
+                if (_enterpriseY == 0)
+                    _enterpriseMoveUp = 0;
+                else
+                    _enterpriseMoveUp = YMoveDistance;
+
+                if (_enterpriseX == 0)
+                    _enterpriseMoveLeft = 0;
+                else
+                    _enterpriseMoveLeft = XMoveDistance;
+
+                switch (args.KeyCode)
+                {
+                    case Keys.Left:
+                        _enterpriseX -= _enterpriseMoveLeft;
+                        break;
+                    case Keys.Up:
+                        _enterpriseY -= _enterpriseMoveUp;
+                        break;
+                    case Keys.Right:
+                        _enterpriseX += _enterpriseMoveRight;
+                        break;
+                    case Keys.Down:
+                        _enterpriseY += _enterpriseMoveDown;
+                        break;
+                }
+            }
+            else
+            {
+                _enterpriseTurn = true;
+                if (_birdOfPreyX >= 220)
+                    _birdOfPreyMoveRight = 0;
+                else
+                    _birdOfPreyMoveRight = XMoveDistance;
+
+                if (_birdOfPreyY >= 200)
+                    _birdOfPreyMoveDown = 0;
+                else
+                    _birdOfPreyMoveDown = YMoveDistance;
+
+                if (_birdOfPreyY == 0)
+                    _birdOfPreyMoveUp = 0;
+                else
+                    _birdOfPreyMoveUp = YMoveDistance;
+
+                if (_birdOfPreyX == 0)
+                    _birdOfPreyMoveLeft = 0;
+                else
+                    _birdOfPreyMoveLeft = XMoveDistance;
+
+                switch (args.KeyCode)
+                {
+                    case Keys.Left:
+                        _birdOfPreyX -= _birdOfPreyMoveLeft;
+                        break;
+                    case Keys.Up:
+                        _birdOfPreyY -= _birdOfPreyMoveUp;
+                        break;
+                    case Keys.Right:
+                        _birdOfPreyX += _birdOfPreyMoveRight;
+                        break;
+                    case Keys.Down:
+                        _birdOfPreyY += _birdOfPreyMoveDown;
+                        break;
+                }
             }
             Invalidate();
         }

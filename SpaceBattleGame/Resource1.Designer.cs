@@ -60,6 +60,13 @@ namespace SpaceBattleGame {
             }
         }
         
+        internal static System.Drawing.Bitmap birdofprey {
+            get {
+                object obj = ResourceManager.GetObject("birdofprey", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap enterprise {
             get {
                 object obj = ResourceManager.GetObject("enterprise", resourceCulture);
