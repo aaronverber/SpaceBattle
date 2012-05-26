@@ -63,15 +63,21 @@ namespace SpaceBattleGame
             }
 
             var actualEnterpriseLocation = ActualLocation(new Point(_enterprise.X, _enterprise.Y));
+            var actualBirdOfPreyLocation = ActualLocation(new Point(_birdOfPrey.X, _birdOfPrey.Y));
 
             g.DrawImage(Resource1.enterprise,
                         actualEnterpriseLocation.X + (int)(0.2 * squareWidth),
                         actualEnterpriseLocation.Y + (int)(0.2 * squareHeight),
                         squareWidth - (int)(0.4* squareWidth),
                         squareHeight - (int)(0.4 * squareHeight));
-            g.DrawImage(Resource1.birdofprey, _birdOfPrey.X * squareWidth + 15, _birdOfPrey.Y * squareHeight + 12, squareWidth - 10, squareHeight - 5);
+            g.DrawImage(Resource1.birdofprey,
+                        actualBirdOfPreyLocation.X + (int)(0.2 * squareWidth),
+                        actualBirdOfPreyLocation.Y + (int)(0.2 * squareHeight),
+                        squareWidth - (int)(0.4 * squareWidth),
+                        squareHeight - (int)(0.4 * squareHeight));
 
             g.DrawEllipse(Pens.Blue, new Rectangle(actualEnterpriseLocation.X + (int)(squareWidth * 0.1), actualEnterpriseLocation.Y + (int)(squareHeight * 0.1), squareWidth - (int)(squareWidth * 0.2), squareHeight - (int)(squareHeight * 0.2)));
+            g.DrawEllipse(Pens.Blue, new Rectangle(actualBirdOfPreyLocation.X + (int)(squareWidth * 0.1), actualBirdOfPreyLocation.Y + (int)(squareHeight * 0.1), squareWidth - (int)(squareWidth * 0.2), squareHeight - (int)(squareHeight * 0.2)));
 
             e.Graphics.DrawImage(bitmap, new Point(0, 0));
             bitmap.Dispose();
