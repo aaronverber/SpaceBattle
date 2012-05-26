@@ -12,6 +12,14 @@ namespace SpaceBattleGame
     {
         public int X;
         public int Y;
+        public int MaxShields;
+        public int CurShields;
+
+        public Ship(int maxshields)
+        {
+            MaxShields = maxshields;
+            CurShields = maxshields;
+        }
     }
 
     [System.ComponentModel.DesignerCategory("")]
@@ -19,9 +27,6 @@ namespace SpaceBattleGame
     {
         Ship _enterprise;
         Ship _birdOfPrey;
-
-        const int XMoveDistance = 26;
-        const int YMoveDistance = 24;
 
         bool _enterpriseTurn = true;
 
@@ -32,8 +37,8 @@ namespace SpaceBattleGame
 
             Resize += HandleResize;
 
-            _enterprise = new Ship();
-            _birdOfPrey = new Ship();
+            _enterprise = new Ship(5);
+            _birdOfPrey = new Ship(5);
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -45,28 +50,42 @@ namespace SpaceBattleGame
             g.DrawLine(Pens.Black, new Point(10, 10), new Point(10, this.Height - 10));
             g.DrawLine(Pens.Black, new Point(10, 10), new Point(this.Width - 10, 10));
 
-            var margin = (this.Height - 20) / 10;
+            var squareHeight = (this.Height - 20) / 10;
             for (var i = 0; i <= 10; i++)
             {
-                g.DrawLine(Pens.Black, new Point(10, margin * i + 10), new Point(this.Width - 10, margin * i + 10));
+                g.DrawLine(Pens.Black, new Point(10, squareHeight * i + 10), new Point(this.Width - 10, squareHeight * i + 10));
             }
 
-            margin = (this.Width - 20) / 10;
+            var squareWidth = (this.Width - 20) / 10;
             for (var i = 0; i <= 10; i++)
             {
-                g.DrawLine(Pens.Black, new Point(margin * i + 10, 10), new Point(margin * i + 10, this.Height - 10));
+                g.DrawLine(Pens.Black, new Point(squareWidth * i + 10, 10), new Point(squareWidth * i + 10, this.Height - 10));
             }
 
-            g.DrawImage(Resource1.enterprise, _enterprise.X + 15, _enterprise.Y + 12, 20, 20);
-            g.DrawImage(Resource1.birdofprey, _birdOfPrey.X + 15, _birdOfPrey.Y + 12, 20, 20);
+            var actualEnterpriseLocation = ActualLocation(new Point(_enterprise.X, _enterprise.Y));
+
+            g.DrawImage(Resource1.enterprise,
+                        actualEnterpriseLocation.X + (int)(0.2 * squareWidth),
+                        actualEnterpriseLocation.Y + (int)(0.2 * squareHeight),
+                        squareWidth - (int)(0.4* squareWidth),
+                        squareHeight - (int)(0.4 * squareHeight));
+            g.DrawImage(Resource1.birdofprey, _birdOfPrey.X * squareWidth + 15, _birdOfPrey.Y * squareHeight + 12, squareWidth - 10, squareHeight - 5);
+
+            g.DrawEllipse(Pens.Blue, new Rectangle(actualEnterpriseLocation.X + (int)(squareWidth * 0.1), actualEnterpriseLocation.Y + (int)(squareHeight * 0.1), squareWidth - (int)(squareWidth * 0.2), squareHeight - (int)(squareHeight * 0.2)));
 
             e.Graphics.DrawImage(bitmap, new Point(0, 0));
-
             bitmap.Dispose();
         }
 
         protected override void OnPaintBackground(PaintEventArgs pevent)
         {
+        }
+
+        Point ActualLocation(Point shipLocation)
+        {
+            var squareWidth = (this.Width - 20) / 10;
+            var squareHeight = (this.Height - 20) / 10;
+            return new Point(shipLocation.X * squareWidth + 11, shipLocation.Y * squareHeight + 11);
         }
 
 
@@ -88,12 +107,12 @@ namespace SpaceBattleGame
             {
                 ship = _birdOfPrey;
             }
-            if (ship.X >= 220)
+            if (ship.X >= this.Width - 20)
                 moveRight = 0;
             else
                 moveRight = XMoveDistance;
 
-            if (ship.Y >= 200)
+            if (ship.Y >= this.Height - 20)
                 moveDown = 0;
             else
                 moveDown = YMoveDistance;
@@ -125,6 +144,22 @@ namespace SpaceBattleGame
             }
             _enterpriseTurn = !_enterpriseTurn;
             Invalidate();
+        }
+
+        int XMoveDistance
+        {
+            get
+            {
+                return 1;
+            }
+        }
+
+        int YMoveDistance
+        {
+            get
+            {
+                return 1;
+            }
         }
     }
 }
