@@ -113,12 +113,12 @@ namespace SpaceBattleGame
             {
                 ship = _birdOfPrey;
             }
-            if (ship.X >= this.Width - 20)
+            if (ship.X >= 9)
                 moveRight = 0;
             else
                 moveRight = XMoveDistance;
 
-            if (ship.Y >= this.Height - 20)
+            if (ship.Y >= 9)
                 moveDown = 0;
             else
                 moveDown = YMoveDistance;
