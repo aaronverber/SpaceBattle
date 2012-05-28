@@ -8,18 +8,49 @@ using System.Drawing;
 namespace SpaceBattleGame
 {
 
-    class Ship
+    interface ISprite
+    {
+        void Draw(Graphics g, int width, int height);
+    }
+
+    class Ship : ISprite
     {
         public int X;
         public int Y;
         public int MaxShields;
         public int CurShields;
 
-        public Ship(int maxshields)
+        Image _image;
+
+        public Ship(Image image, int maxshields)
         {
+            _image = image;
             MaxShields = maxshields;
             CurShields = maxshields;
         }
+
+        public void Draw(Graphics g, int width, int height)
+        {
+            var actualLocation = ActualLocation(new Point(X, Y), width, height);
+            var squareWidth = (width - 20) / 10;
+            var squareHeight = (height - 20) / 10;
+            g.DrawImage(_image,
+                        actualLocation.X + (int)(0.2 * squareWidth),
+                        actualLocation.Y + (int)(0.2 * squareHeight),
+                        squareWidth - (int)(0.4 * squareWidth),
+                        squareHeight - (int)(0.4 * squareHeight));
+
+            g.DrawEllipse(Pens.Blue, new Rectangle(actualLocation.X + (int)(squareWidth * 0.1), actualLocation.Y + (int)(squareHeight * 0.1), squareWidth - (int)(squareWidth * 0.2), squareHeight - (int)(squareHeight * 0.2)));
+            g.DrawEllipse(Pens.Blue, new Rectangle(actualLocation.X + (int)(squareWidth * 0.1), actualLocation.Y + (int)(squareHeight * 0.1), squareWidth - (int)(squareWidth * 0.2), squareHeight - (int)(squareHeight * 0.2)));
+        }
+
+        Point ActualLocation(Point shipLocation, int width, int height)
+        {
+            var squareWidth = (width - 20) / 10;
+            var squareHeight = (height - 20) / 10;
+            return new Point(shipLocation.X * squareWidth + 11, shipLocation.Y * squareHeight + 11);
+        }
+
     }
 
     [System.ComponentModel.DesignerCategory("")]
@@ -37,8 +68,8 @@ namespace SpaceBattleGame
 
             Resize += HandleResize;
 
-            _enterprise = new Ship(5);
-            _birdOfPrey = new Ship(5);
+            _enterprise = new Ship(Resource1.enterprise, 5);
+            _birdOfPrey = new Ship(Resource1.birdofprey, 5);
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -62,22 +93,8 @@ namespace SpaceBattleGame
                 g.DrawLine(Pens.Black, new Point(squareWidth * i + 10, 10), new Point(squareWidth * i + 10, this.Height - 10));
             }
 
-            var actualEnterpriseLocation = ActualLocation(new Point(_enterprise.X, _enterprise.Y));
-            var actualBirdOfPreyLocation = ActualLocation(new Point(_birdOfPrey.X, _birdOfPrey.Y));
-
-            g.DrawImage(Resource1.enterprise,
-                        actualEnterpriseLocation.X + (int)(0.2 * squareWidth),
-                        actualEnterpriseLocation.Y + (int)(0.2 * squareHeight),
-                        squareWidth - (int)(0.4* squareWidth),
-                        squareHeight - (int)(0.4 * squareHeight));
-            g.DrawImage(Resource1.birdofprey,
-                        actualBirdOfPreyLocation.X + (int)(0.2 * squareWidth),
-                        actualBirdOfPreyLocation.Y + (int)(0.2 * squareHeight),
-                        squareWidth - (int)(0.4 * squareWidth),
-                        squareHeight - (int)(0.4 * squareHeight));
-
-            g.DrawEllipse(Pens.Blue, new Rectangle(actualEnterpriseLocation.X + (int)(squareWidth * 0.1), actualEnterpriseLocation.Y + (int)(squareHeight * 0.1), squareWidth - (int)(squareWidth * 0.2), squareHeight - (int)(squareHeight * 0.2)));
-            g.DrawEllipse(Pens.Blue, new Rectangle(actualBirdOfPreyLocation.X + (int)(squareWidth * 0.1), actualBirdOfPreyLocation.Y + (int)(squareHeight * 0.1), squareWidth - (int)(squareWidth * 0.2), squareHeight - (int)(squareHeight * 0.2)));
+            _enterprise.Draw(g, this.Width, this.Height);
+            _birdOfPrey.Draw(g, this.Width, this.Height);
 
             e.Graphics.DrawImage(bitmap, new Point(0, 0));
             bitmap.Dispose();
@@ -85,13 +102,6 @@ namespace SpaceBattleGame
 
         protected override void OnPaintBackground(PaintEventArgs pevent)
         {
-        }
-
-        Point ActualLocation(Point shipLocation)
-        {
-            var squareWidth = (this.Width - 20) / 10;
-            var squareHeight = (this.Height - 20) / 10;
-            return new Point(shipLocation.X * squareWidth + 11, shipLocation.Y * squareHeight + 11);
         }
 
 
