@@ -19,14 +19,18 @@ namespace SpaceBattleGame
         public int Y;
         public int MaxShields;
         public int CurShields;
+        public int MaxHull;
+        public int CurHull;
 
         Image _image;
 
-        public Ship(Image image, int maxshields)
+        public Ship(Image image, int maxShields, int maxHull)
         {
             _image = image;
-            MaxShields = maxshields;
-            CurShields = maxshields;
+            MaxShields = maxShields;
+            CurShields = maxShields;
+            MaxHull = maxHull;
+            CurHull = maxHull;
         }
 
         public void Draw(Graphics g, int width, int height)
@@ -40,9 +44,32 @@ namespace SpaceBattleGame
                         squareWidth - (int)(0.4 * squareWidth),
                         squareHeight - (int)(0.4 * squareHeight));
 
-            g.DrawEllipse(Pens.Blue, new Rectangle(actualLocation.X + (int)(squareWidth * 0.1), actualLocation.Y + (int)(squareHeight * 0.1), squareWidth - (int)(squareWidth * 0.2), squareHeight - (int)(squareHeight * 0.2)));
-            g.DrawEllipse(Pens.Blue, new Rectangle(actualLocation.X + (int)(squareWidth * 0.1), actualLocation.Y + (int)(squareHeight * 0.1), squareWidth - (int)(squareWidth * 0.2), squareHeight - (int)(squareHeight * 0.2)));
+            var shieldPen = new Pen(Brushes.Blue, 2.0f);
+            shieldPen.Color = Color.FromArgb(122, 0, 0, 255);
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            if (CurShields == MaxShields)
+            {
+                g.DrawEllipse(shieldPen, new Rectangle(actualLocation.X + (int)(squareWidth * 0.1), actualLocation.Y + (int)(squareHeight * 0.1), squareWidth - (int)(squareWidth * 0.2), squareHeight - (int)(squareHeight * 0.2)));
+            }
+            if (CurShields > MaxShields * 0.5)
+            {
+                g.DrawEllipse(shieldPen, new Rectangle(actualLocation.X + (int)(squareWidth * 0.2), actualLocation.Y + (int)(squareHeight * 0.2), squareWidth - (int)(squareWidth * 0.4), squareHeight - (int)(squareHeight * 0.4)));
+            }
+            if (CurShields > 0)
+            {
+                g.DrawEllipse(shieldPen, new Rectangle(actualLocation.X + (int)(squareWidth * 0.3), actualLocation.Y + (int)(squareHeight * 0.3), squareWidth - (int)(squareWidth * 0.6), squareHeight - (int)(squareHeight * 0.6)));
+            }
+
+            g.FillRectangle(Brushes.Red, 
+                            actualLocation.X, 
+                            actualLocation.Y + (int)(squareHeight * 0.9), 
+                            (int)(squareWidth * (this.CurHull / (this.MaxHull * 1.0))), 
+                            (int)(squareHeight * 0.1));
+
+            g.DrawString("Shield Strength: " + CurShields, SystemFonts.DefaultFont, Brushes.Blue, actualLocation.X, actualLocation.Y);
+            g.DrawString("Hull Strength: " + CurHull, SystemFonts.DefaultFont, Brushes.Red, (float)(actualLocation.X), (float)(actualLocation.Y + 10));
         }
+
 
         Point ActualLocation(Point shipLocation, int width, int height)
         {
@@ -68,8 +95,10 @@ namespace SpaceBattleGame
 
             Resize += HandleResize;
 
-            _enterprise = new Ship(Resource1.enterprise, 5);
-            _birdOfPrey = new Ship(Resource1.birdofprey, 5);
+            _enterprise = new Ship(Resource1.enterprise, 5, 10);
+            _enterprise.CurShields = 1;
+            _enterprise.CurHull = 5;
+            _birdOfPrey = new Ship(Resource1.birdofprey, 5, 10);
         }
 
         protected override void OnPaint(PaintEventArgs e)
